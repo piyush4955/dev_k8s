@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fastapi-recording-rules
+  namespace: monitoring
+  labels:
+    release: prometheus-stack
+spec:
+  groups:
+    - name: fastapi.performance
+      interval: 30s
+      rules:
+        - record: fastapi:requests:rate1m
+          expr: sum(rate(fastapi_requests_total{namespace="microservice"}[1m]))
+        
+        - record: fastapi:response_time:avg
+          expr: sum(rate(fastapi_request_duration_seconds_sum{namespace="microservice"}[1m])) / sum(rate(fastapi_request_duration_seconds_count{namespace="microservice"}[1m]))
+        
+        - record: fastapi:errors:rate1m
+          expr: sum(rate(fastapi_requests_total{namespace="microservice", status=~"5.."}[1m]))
+        
+        - record: fastapi:memory:usage_bytes
+          expr: sum(container_memory_working_set_bytes{namespace="microservice", pod=~"fastapi-app.*"}) by (pod)

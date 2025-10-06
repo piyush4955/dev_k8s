@@ -1,0 +1,4 @@
+nodeExporter:
+  hostPort: false
+  service:
+    hostPort: false

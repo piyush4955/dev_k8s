@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fastapi-alert-rules
+  namespace: monitoring
+  labels:
+    release: prometheus-stack
+spec:
+  groups:
+    - name: fastapi.rules
+      rules:
+        # Alert when FastAPI app is down (based on metrics endpoint)
+        - alert: FastAPIAppDown
+          expr: up{job="fastapi-app-service", namespace="microservice"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "FastAPI app is down"
+            description: "FastAPI instance {{ $labels.instance }} has been down for more than 1 minute."
+        
+        # Alert when no FastAPI pods are running
+        - alert: FastAPINoPods
+          expr: kube_deployment_status_replicas_available{deployment="fastapi-app", namespace="microservice"} == 0
+          for: 30s
+          labels:
+            severity: critical
+          annotations:
+            summary: "No FastAPI pods available"
+            description: "FastAPI deployment has no available replicas."
+        
+        # Alert on high error rate
+        - alert: FastAPIHighErrorRate
+          expr: rate(fastapi_requests_total{status=~"5.."}[5m]) > 0.1
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High error rate in FastAPI"
+            description: "FastAPI is experiencing a high rate of 5xx errors: {{ $value }} errors/sec"

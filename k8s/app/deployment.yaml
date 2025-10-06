@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-app
+  namespace: microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fastapi-app
+  template:
+    metadata:
+      labels:
+        app: fastapi-app
+    spec:
+      containers:
+        - name: fastapi-app
+          image: piyushkumar26/fastapi-microservice:v2
+          imagePullPolicy: IfNotPresent   # Use local Minikube image if available
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-app-service
+  namespace: microservice
+spec:
+  selector:
+    app: fastapi-app
+  ports:
+    - protocol: TCP
+      port: 80        # Cluster-internal port
+      targetPort: 8000 # Container port
+  type: ClusterIP     # Change to NodePort if you want external access without Ingress

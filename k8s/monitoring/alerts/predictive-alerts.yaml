@@ -1,0 +1,55 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fastapi-predictive-alerts
+  namespace: monitoring
+  labels:
+    release: prometheus-stack
+spec:
+  groups:
+    - name: fastapi.predictive
+      rules:
+        - alert: MemoryLeakPredicted
+          expr: predict_linear(fastapi:memory:usage_bytes[1h], 7200) > 250000000
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Memory leak predicted for {{ $labels.pod }}"
+            description: "Pod {{ $labels.pod }} memory usage trend suggests it will reach 250MB in 2 hours."
+        
+        - alert: ResponseTimeDegradation
+          expr: deriv(fastapi:response_time:avg[10m]) > 0.001
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Response time is degrading"
+            description: "Average response time has been increasing for 5+ minutes."
+        
+        - alert: HighResponseTime
+          expr: fastapi:response_time:avg > 0.5
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High response time detected"
+            description: "Average response time is {{ $value }}s (threshold: 0.5s)"
+        
+        - alert: FrequentRestarts
+          expr: rate(kube_pod_container_status_restarts_total{namespace="microservice", pod=~"fastapi-app.*"}[15m]) > 0.1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ $labels.pod }} restarting frequently"
+            description: "Pod has restarted frequently over 15m. Possible crash loop."
+        
+        - alert: TrafficSpikeDetected
+          expr: fastapi:requests:rate1m > 3 * avg_over_time(fastapi:requests:rate1m[1h])
+          for: 2m
+          labels:
+            severity: info
+          annotations:
+            summary: "Unusual traffic spike"
+            description: "Current request rate {{ $value }} req/s is 3x the hourly average"
