@@ -150,31 +150,31 @@ TrafficSpikeDetected: Unusual traffic patterns
 FrequentRestarts: Potential crash loops
 ```
 
-###Technology Stack
+Technology Stack
 
-Language: Python 3.11
-Framework: FastAPI + Uvicorn
-Container: Docker
-Orchestration: Kubernetes (Minikube)
-Monitoring: Prometheus, Grafana
-Alerting: Alertmanager
-Analytics: Python (requests library)
+- **Language**: Python 3.11
+- **Framework**: FastAPI + Uvicorn
+- **Container**: Docker
+- **Orchestration**: Kubernetes (Minikube)
+- **Monitoring**: Prometheus, Grafana
+- **Alerting**: Alertmanager
+- **Analytics**: Python (requests library)
 
-###Key Learnings
+Key Learnings
 
-ServiceMonitor requires proper labels to be discovered by Prometheus
-Alertmanager templates use different syntax than Prometheus queries
-Predictive alerts need sufficient historical data (1+ hour)
-Recording rules improve query performance for dashboards
-Kubernetes self-healing requires proper replica configuration
+- ServiceMonitor requires proper labels to be discovered by Prometheus
+- Alertmanager templates use different syntax than Prometheus queries
+- Predictive alerts need sufficient historical data (1+ hour)
+- Recording rules improve query performance for dashboards
+- Kubernetes self-healing requires proper replica configuration
 
-###Future Enhancements
+Future Enhancements
 
-Add distributed tracing (Jaeger)
-Implement log aggregation (Loki)
-Add HorizontalPodAutoscaler for dynamic scaling
-Integrate advanced ML models (scikit-learn)
-Add integration tests
-Implement blue-green deployments
+- Add distributed tracing (Jaeger)
+-Implement log aggregation (Loki)
+- Add HorizontalPodAutoscaler for dynamic scaling
+- Integrate advanced ML models (scikit-learn)
+- Add integration tests
+- Implement blue-green deployments
 
 
