@@ -79,17 +79,22 @@ Deploy application
 bashkubectl create namespace microservice
 kubectl apply -f k8s/app/
 
-Setup monitoring
-
+```
+2. **Setup monitoring**
+```bash
 bashhelm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm install prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
 kubectl apply -f k8s/monitoring/
+```
 
-Configure Alertmanager (optional)
-
+3. **Configure Alertmanager (optional)**
+```bash
 bash# Update with your Slack webhook
 kubectl apply -f k8s/monitoring/alertmanager-config.yaml
-Access Dashboards
+```
+
+4. **Access Dashboards**
+```bash
 bash# Prometheus
 kubectl port-forward -n monitoring svc/prometheus-stack-kube-prom-prometheus 9090:9090
 
@@ -104,8 +109,10 @@ Prometheus: http://localhost:9090
 Grafana: http://localhost:3001
 FastAPI: http://localhost:8081
 Metrics: http://localhost:8081/metrics
+```
 
-Testing
+5. **Testing**
+```bash
 Run Chaos Test
 bash./scripts/chaos-with-recovery.sh
 Watch:
@@ -125,11 +132,11 @@ bash./scripts/final-verification.sh
 Monitoring Capabilities
 Metrics Collected
 
-Request rate (req/s)
-Response time (p50, p95, p99)
+Request rate (req/s) ->needs to be updated
+Response time (p50, p95, p99) ->needs to be updated
 Error rate
-Pod CPU/Memory usage
-Pod restart count
+Pod CPU/Memory usage ->needs to be updated
+Pod restart count ->needs to be updated
 
 Alerts Configured
 
@@ -139,6 +146,7 @@ MemoryLeakPredicted: Memory trending toward limit
 ResponseTimeDegradation: Response time increasing
 TrafficSpikeDetected: Unusual traffic patterns
 FrequentRestarts: Potential crash loops
+```
 
 Technology Stack
 
@@ -167,5 +175,4 @@ Integrate advanced ML models (scikit-learn)
 Add integration tests
 Implement blue-green deployments
 
-License
-MIT
+
