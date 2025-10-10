@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: fastapi-app
-          image: piyushkumar26/fastapi-microservice:v2
+          image: piyushkumar26/fastapi-microservice:v3-ml
           imagePullPolicy: IfNotPresent   # Use local Minikube image if available
           ports:
             - containerPort: 8000
